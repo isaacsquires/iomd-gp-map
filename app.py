@@ -6,6 +6,7 @@ from dash.dependencies import Input, Output
 from mapping import make_map, read_in_data, LA_to_LSOA, LSOA_to_IoMD, gp_surgeries_from_LA, gp_surgeries_from_LSOA, gp_coords_from_LA, filter_LSOAs_by_decile
 import pandas as pd
 import numpy as np
+import plotly.express as px
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -58,7 +59,12 @@ app.layout = html.Div(children=[
                 ),
     dcc.Graph(
         id='second-map',
-        figure=make_map(LA_data, LA_df, 'color')
+        figure=px.scatter(),
+    ),
+    dcc.Textarea(
+        id='textarea-second-map',
+        value='Select a GP surgery for more info',
+        style={'width': '80%'},
     ),
     html.H3(children='Table of GP surgeries in the selected local authority'),
     dash_table.DataTable(
@@ -122,21 +128,12 @@ def display_click_data(clickData):
     print(selected_LA)
     return selected_LA
 
-# @app.callback(
-#     [Output('gp-datatable', 'data'),Output('gp-textarea', 'value')],
-#     [Input('second-map', 'clickData')]) 
-# def display_click_data(clickData):
-#     print(clickData)
-#     # selected_LA = clickData['points'][0]['hovertext']
-#     # LSOA_code = clickData['points'][0]['location']
-#     # gp_data = gp_surgeries_from_LSOA(LSOA_code)
-#     # if gp_data.empty:
-#     #     message = 'No GP surgeries in selected LSOA'
-#     #     gp_df = gp_data.to_dict('records')
-#     # else:
-#     #     message = str(len(gp_data))+' GP surgeries found in LSOA'
-#     #     gp_df = gp_data.to_dict('records')
-#     return gp_df, message
+@app.callback(
+    Output('textarea-second-map', 'value'),
+    [Input('second-map', 'clickData')]) 
+def display_click_data(clickData):
+    print(clickData)
+    return str(clickData)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
