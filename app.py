@@ -43,7 +43,7 @@ app.layout = html.Div(children=[
     dcc.RadioItems(
                     id='dataset-radio',
                     options=[{'label': k, 'value': k} for k in datasets],
-                    value='LSOA'
+                    value='IoMD Decile'
                 ),
     html.H2(children='Show GP surgery points'),
     dcc.RadioItems(
@@ -133,7 +133,11 @@ def display_click_data(clickData):
     [Input('second-map', 'clickData')]) 
 def display_click_data(clickData):
     print(clickData)
-    return str(clickData)
+    return_data = 'Surgery name: '+str(clickData['points'][0]['customdata'][0])+'\n'+'PCN: '\
+                    +str(clickData['points'][0]['customdata'][2])+'\n'+'Phone number: '\
+                        +str(clickData['points'][0]['customdata'][3])+'\n'+'Postcode: '\
+                        +str(clickData['points'][0]['customdata'][1])
+    return return_data
 
 if __name__ == '__main__':
     app.run_server(debug=True)

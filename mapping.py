@@ -74,7 +74,7 @@ def make_map(gpd_df, chloro_df, color, LA_name=None, LA_data=None, surgery_data=
     fig = px.choropleth_mapbox(chloro_df, geojson=gpd_df, color=color, locations='code', 
                     featureidkey='properties.code',hover_name='hover_data', center=center, zoom=zoom)
     if surgery_data is not None:
-        fig.add_trace(px.scatter_mapbox(surgery_data, lat="lat", lon="lon", size='size' ,hover_name='hover_data', size_max=15).data[0])
+        fig.add_trace(px.scatter_mapbox(surgery_data, lat="lat", lon="lon", size='size' ,hover_name='hover_data',custom_data=['surgery_name','postcode', 'pcn', 'phone_number'], size_max=15).data[0])
     fig.update_layout(margin=dict(l=5, r=5, t=5, b=5), mapbox_style="dark", clickmode='event+select', hovermode='closest')
     print('Mapping complete')
     return fig
@@ -121,11 +121,12 @@ def gp_coords_from_LA(LA_name):
             surgery_data_temp = selected_surgery_data[selected_surgery_data['postcode']==selected_postcode]
             surgery_name = surgery_data_temp['surgery_name'].values[0]
             pcn = surgery_data_temp['PCN'].values[0]
+            phone_number = surgery_data_temp['phone_number'].values[0]
             lon = res['result']['longitude']
             lat = res['result']['latitude']
             gp_coord_df_temp = pd.DataFrame({'lon':[lon],'lat':[lat],'size':size, 'postcode':selected_postcode, 
                                                 'surgery_name': surgery_name,
-                                                'pcn': pcn, 'hover_data':surgery_name+', '+pcn})
+                                                'pcn': pcn, 'phone_number': phone_number, 'hover_data':surgery_name+', '+pcn})
             gp_coord_df = gp_coord_df.append(gp_coord_df_temp)
         except:
             missing_postcode_df_temp = pd.DataFrame({'postcode':[res['query']]})
