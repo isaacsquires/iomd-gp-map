@@ -19,5 +19,5 @@ RUN chmod +x ./boot.sh
 RUN chown -R iomd-gp-map:iomd-gp-map ./
 USER iomd-gp-map
 
-EXPOSE 8050
+EXPOSE 5000
 CMD ["./boot.sh"]

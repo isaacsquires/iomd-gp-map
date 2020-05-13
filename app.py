@@ -23,6 +23,8 @@ iomd_decile_list = np.append(np.unique(iomd_df['imd_decile']), 'None')
 datasets = ['IoMD Decile','IoMD Rank', 'LSOA']
 surgery_df_empty, missing_postcodes = gp_coords_from_LA('A')
 
+
+
 app.layout = html.Div(children=[
     html.H1(children='Inverse Care Mapping Tool'),
 
@@ -142,4 +144,4 @@ def display_click_data(clickData):
     return return_data
 
 if __name__ == '__main__':
-    app.run_server(host='0.0.0.0',debug=True, port=8050)
+    app.run_server(debug=True, port=5000)
