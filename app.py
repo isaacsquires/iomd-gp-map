@@ -9,6 +9,7 @@ import numpy as np
 import plotly.express as px
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+port = int(os.environ.get("PORT", 5000))
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
@@ -144,4 +145,4 @@ def display_click_data(clickData):
     return return_data
 
 if __name__ == '__main__':
-    app.run_server(debug=True, port=5000)
+    app.run_server(debug=False, host="0.0.0.0", port=port)
