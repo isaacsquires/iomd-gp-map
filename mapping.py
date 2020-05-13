@@ -13,9 +13,10 @@ import plotly.graph_objects as go
 import numpy as np
 import requests
 
+print('Reading in postcode lookup tables...')
+postcode_lsoa_lookup = pd.read_csv('data/postcode_lookup.csv.zip',usecols=['pcd7','pcd8','pcds','lsoa11cd','ladnm'])
 print('Reading in lookup tables...')
-postcode_lsoa_lookup = pd.read_csv('data/postcode_lookup.csv.zip', low_memory=False)
-lookup = pd.read_csv('data/lookup.csv', delimiter=',', encoding = "ISO-8859-1", low_memory=False)
+lookup = pd.read_csv('data/lookup.csv', delimiter=',', usecols=['LAD11NM','LSOA11CD'], encoding = "ISO-8859-1")
 print('Reading in GP surgery data...')
 surgery_data = pd.read_excel('data/PCN_GP_data.xlsx', sheet_name='GP Surgery list')
 access_token = os.getenv("MAPBOX-ACCESS-TOKEN")
