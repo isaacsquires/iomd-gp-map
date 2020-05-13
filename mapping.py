@@ -14,7 +14,7 @@ import numpy as np
 import requests
 
 print('Reading in lookup tables...')
-postcode_lsoa_lookup = pd.read_csv('data/postcode_lookup.csv', low_memory=False)
+postcode_lsoa_lookup = pd.read_csv('data/postcode_lookup.csv.zip', low_memory=False)
 lookup = pd.read_csv('data/lookup.csv', delimiter=',', encoding = "ISO-8859-1", low_memory=False)
 print('Reading in GP surgery data...')
 surgery_data = pd.read_excel('data/PCN_GP_data.xlsx', sheet_name='GP Surgery list')
