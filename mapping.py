@@ -3,7 +3,7 @@ import json
 from dotenv import load_dotenv
 import os
 from os.path import join, dirname
-dotenv_path = join(dirname(__file__), '.env')
+dotenv_path = join('.env')
 load_dotenv(dotenv_path)
 import pandas as pd
 import geopandas as gpd
@@ -18,9 +18,7 @@ postcode_lsoa_lookup = pd.read_csv('data/postcode_lookup.csv', low_memory=False)
 lookup = pd.read_csv('data/lookup.csv', delimiter=',', encoding = "ISO-8859-1", low_memory=False)
 print('Reading in GP surgery data...')
 surgery_data = pd.read_excel('data/PCN_GP_data.xlsx', sheet_name='GP Surgery list')
-# SHOULD NOT BE HARDCODED!!
-# access_token = os.getenv("MAPBOX-ACCESS-TOKEN")
-access_token = 'pk.eyJ1IjoiaXNhYWNzcXVpcmVzIiwiYSI6ImNrOXZueXFodDAweTUzbW9ndnVpNDF2dzIifQ.OpLFvnM5L-FHkHXFchSDDA'
+access_token = os.getenv("MAPBOX-ACCESS-TOKEN")
 px.set_mapbox_access_token(access_token)
 def read_in_data(name):
 
