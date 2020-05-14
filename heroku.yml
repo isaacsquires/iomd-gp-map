@@ -2,4 +2,4 @@ build:
     docker:
       web: Dockerfile
   run:
-    web: gunicorn --workers=5 -p 0.0.0.0:$PORT --timeout 240 app:server
+      web: gunicorn --workers=5 -p 0.0.0.0:$PORT --timeout 240 app:server
