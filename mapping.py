@@ -14,13 +14,18 @@ import numpy as np
 import requests
 
 print('Reading in postcode lookup tables...')
-postcode_lsoa_lookup = pd.read_csv('data/postcode_lookup.csv.zip',usecols=['pcd7','pcd8','pcds','lsoa11cd','ladnm'])
+postcode_lsoa_lookup = pd.read_pickle('data/postcode_lookup_reduced.pkl.zip')
 print('Reading in lookup tables...')
-lookup = pd.read_csv('data/lookup.csv', delimiter=',', usecols=['LAD11NM','LSOA11CD'], encoding = "ISO-8859-1")
+lookup = pd.read_pickle('data/lookup_reduced.pkl.zip')
 print('Reading in GP surgery data...')
-surgery_data = pd.read_excel('data/PCN_GP_data.xlsx', sheet_name='GP Surgery list')
-access_token = os.getenv("MAPBOX-ACCESS-TOKEN")
-px.set_mapbox_access_token(access_token)
+surgery_data = pd.read_pickle('data/PCN_GP_data.pkl.zip')
+try:
+    access_token = os.getenv("MAPBOX_ACCESS_TOKEN")
+    px.set_mapbox_access_token(access_token)
+except:
+    print('No access token found')
+    access_token = ''
+
 def read_in_data(name):
 
     if name == 'LSOA':
