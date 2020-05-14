@@ -11,7 +11,7 @@ RUN .venv/bin/pip install --upgrade pip
 RUN .venv/bin/pip install -r requirements.txt
 
 COPY app.py app.py
-ENV MAPBOX_ACCESS_TOKEN=${MAPBOX_ACCESS_TOKEN}
+COPY .env .env
 COPY mapping.py mapping.py
 COPY boot.sh boot.sh
 COPY data data
