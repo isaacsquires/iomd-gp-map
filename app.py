@@ -7,6 +7,7 @@ from mapping import make_map, read_in_data, LA_to_LSOA, LSOA_to_IoMD, gp_surgeri
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import os
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 port = int(os.environ.get("PORT", 5000))
