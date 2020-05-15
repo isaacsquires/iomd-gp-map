@@ -13,6 +13,9 @@ import plotly.graph_objects as go
 import numpy as np
 import requests
 
+england_lat = 53
+england_lon = -3
+
 print('Reading in postcode lookup tables...')
 postcode_lsoa_lookup = pd.read_pickle('data/postcode_lookup_reduced.pkl.zip')
 print('Reading in lookup tables...')
@@ -61,16 +64,20 @@ def read_in_data(name):
 def get_LA_centroid(LA_name, LA_data):
     geometry = LA_data[LA_data['lad17nm']==LA_name]['geometry'].values
     centroid = geometry.centroid
-    for coord in centroid:
-        lat = coord.y
-        lon = coord.x
+    try:
+        for coord in centroid:
+            lat = coord.y
+            lon = coord.x
+    except:
+        lat = england_lat
+        lon = england_lon
     return centroid, {'lat':lat, 'lon':lon}
 
 
-def make_map(gpd_df, chloro_df, color, LA_name=None, LA_data=None, surgery_data=None):
+def make_map(gpd_df, chloro_df, color, LA_name=None, LA_data=None, surgery_data=None, show_scalebar=True):
     print('Mapping start')
     if LA_name is None:
-        center = {'lat': 51.51, 'lon':-0.12}
+        center = {'lat': england_lat, 'lon': england_lon}
         zoom=5
     else:
         zoom=11
@@ -80,6 +87,8 @@ def make_map(gpd_df, chloro_df, color, LA_name=None, LA_data=None, surgery_data=
     if surgery_data is not None:
         fig.add_trace(px.scatter_mapbox(surgery_data, lat="lat", lon="lon", size='size' ,hover_name='hover_data',custom_data=['surgery_name','postcode', 'pcn', 'phone_number'], size_max=15).data[0])
     fig.update_layout(margin=dict(l=5, r=5, t=5, b=5), mapbox_style="dark", clickmode='event+select', hovermode='closest')
+    if show_scalebar is False:
+        fig.update_layout(coloraxis_showscale=False)
     print('Mapping complete')
     return fig
 
@@ -123,17 +132,17 @@ def gp_coords_from_LA(LA_name):
         try:
             postcode = postcode.replace(" ", '')
             response = requests.get(request_url+postcode)
-            print(response)
             res = response.json()
             selected_postcode = res['data']['postcode']
             surgery_data_temp = selected_surgery_data[selected_surgery_data['postcode']==selected_postcode]
             surgery_name = surgery_data_temp['surgery_name'].values[0]
+            phone_number = surgery_data_temp['phone_number'].values[0]
             pcn = surgery_data_temp['PCN'].values[0]
-            lon = res['data']['longitude']
-            lat = res['data']['latitude']
+            lon = float(res['data']['longitude'])
+            lat = float(res['data']['latitude'])
             gp_coord_df_temp = pd.DataFrame({'lon':[lon],'lat':[lat],'size':size, 'postcode':selected_postcode, 
                                                 'surgery_name': surgery_name,
-                                                'pcn': pcn, 'hover_data':str(surgery_name)+', '+str(pcn)})
+                                                'pcn': pcn,'phone_number': phone_number, 'hover_data':str(surgery_name)+', '+str(pcn)})
             gp_coord_df = gp_coord_df.append(gp_coord_df_temp)
         except:
             missing_postcode_df_temp = pd.DataFrame({'postcode':[res['input']]})
