@@ -41,7 +41,7 @@ app.layout = html.Div(children=[
     dbc.Row(
             [
                 dbc.Col(html.Div(children=[
-                    html.H4(children='Choose a local authority from the dropdown or select on the map'),
+                    html.H4(children='Choose a local authority from the dropdown or select on the map', style = {'padding-bottom': '40px'}),
                     dcc.Dropdown(
                     id='LA-dropdown',
                     options=[{'label': k, 'value': k} for k in LA_list],
@@ -50,9 +50,9 @@ app.layout = html.Div(children=[
                     dcc.Graph(
                             id='main-map',
                             figure=make_map(LA_data, LA_df, 'color', show_scalebar=False),
-                            style = {'padding-top': '80px'}
+                            style = {'padding-top': '70px'}
                         ),
-                        ])),
+                        ]),),
 
                 dbc.Col(html.Div(children=[
                     html.H4(children='Select a dataset'),
@@ -74,20 +74,22 @@ app.layout = html.Div(children=[
                     dcc.Graph(
                         id='second-map',
                         figure=placeholder_map(),
-                        style = {'padding-top': '10px'},
+                        style = {'padding-top': '10px', 'padding-bottom': '10px'},
                     ),
                     html.H4(children='Filter by deprivation decile'),
                         dcc.Dropdown(
                     id='iomd-dropdown',
                     options=[{'label': k, 'value': k} for k in iomd_decile_list],
                     value= 'None',
+                    style = {'padding-bottom': '10px'},
                 ),
                     dcc.Textarea(
                                 id='textarea-second-map',
                                 value='Select a GP surgery on the map for more info',
                                 style={'width': '100%'},
                             ),
-                ])),
+                ]),
+                ),
             ]
         ),
 
@@ -104,7 +106,7 @@ app.layout = html.Div(children=[
 # LA Callback
 
 @app.callback(
-    [Output('second-map', 'figure'), Output('gp-datatable', 'data')],
+    Output('second-map', 'figure'),
     [Input('dataset-radio', 'value'),Input('LA-dropdown', 'value'), Input('surgery-radio', 'value'), Input('iomd-dropdown', 'value'),])
 def update_map(dataset, selected_LA, surgery_switch, iomd_decile):
     if surgery_switch == 'on':
@@ -139,7 +141,7 @@ def update_map(dataset, selected_LA, surgery_switch, iomd_decile):
         selected_LSOA_data, selected_LSOA_df = LA_to_LSOA(selected_LA, LSOA_data)
         fig = make_map(selected_LSOA_data, selected_LSOA_df, 'color', LA_name=selected_LA, LA_data=LA_data, surgery_data=surgery_data)
 
-    return fig, surgery_data.to_dict('records')
+    return fig
 
 @app.callback(
     Output('LA-dropdown', 'value'),

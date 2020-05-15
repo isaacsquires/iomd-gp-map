@@ -83,7 +83,7 @@ def make_map(gpd_df, chloro_df, color, LA_name=None, LA_data=None, surgery_data=
         zoom=11
         centroid, center = get_LA_centroid(LA_name, LA_data)
     fig = px.choropleth_mapbox(chloro_df, geojson=gpd_df, color=color, locations='code', 
-                    featureidkey='properties.code',hover_name='hover_data', center=center, zoom=zoom)
+                    featureidkey='properties.code',hover_name='hover_data', center=center, zoom=zoom, color_continuous_scale=px.colors.sequential.PuBuGn)
     if surgery_data is not None:
         fig.add_trace(px.scatter_mapbox(surgery_data, lat="lat", lon="lon", size='size' ,hover_name='hover_data',custom_data=['surgery_name','postcode', 'pcn', 'phone_number'], size_max=15).data[0])
     fig.update_layout(margin=dict(l=5, r=5, t=5, b=5), mapbox_style="dark", clickmode='event+select', hovermode='closest')
