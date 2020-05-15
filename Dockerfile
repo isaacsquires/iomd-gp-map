@@ -11,7 +11,6 @@ RUN .venv/bin/pip install --upgrade pip
 RUN .venv/bin/pip install -r requirements.txt
 
 COPY app.py app.py
-# COPY .env .env
 COPY mapping.py mapping.py
 COPY boot.sh boot.sh
 COPY data data
