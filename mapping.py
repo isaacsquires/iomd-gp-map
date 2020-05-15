@@ -116,24 +116,27 @@ def gp_coords_from_LA(LA_name):
     selected_surgery_data = gp_surgeries_from_LA(LA_name)
     postcodes = {"postcodes":selected_surgery_data['postcode'].values[:].tolist()}
     missing_postcode_df = pd.DataFrame({'postcode':[]})
-    r = requests.post('http://api.postcodes.io/postcodes', json=postcodes)
+    request_url = 'http://api.getthedata.com/postcode/'
     gp_coord_df = pd.DataFrame({'lon':[],'lat':[],'postcode':[],'surgery_name':[],
                                    'pcn':[]})
-    for res in r.json()['result']:
+    for postcode in postcodes['postcodes']:
         try:
-            selected_postcode = res['result']['postcode']
+            postcode = postcode.replace(" ", '')
+            response = requests.get(request_url+postcode)
+            print(response)
+            res = response.json()
+            selected_postcode = res['data']['postcode']
             surgery_data_temp = selected_surgery_data[selected_surgery_data['postcode']==selected_postcode]
             surgery_name = surgery_data_temp['surgery_name'].values[0]
             pcn = surgery_data_temp['PCN'].values[0]
-            phone_number = surgery_data_temp['phone_number'].values[0]
-            lon = res['result']['longitude']
-            lat = res['result']['latitude']
+            lon = res['data']['longitude']
+            lat = res['data']['latitude']
             gp_coord_df_temp = pd.DataFrame({'lon':[lon],'lat':[lat],'size':size, 'postcode':selected_postcode, 
                                                 'surgery_name': surgery_name,
-                                                'pcn': pcn, 'phone_number': phone_number, 'hover_data':surgery_name+', '+pcn})
+                                                'pcn': pcn, 'hover_data':str(surgery_name)+', '+str(pcn)})
             gp_coord_df = gp_coord_df.append(gp_coord_df_temp)
         except:
-            missing_postcode_df_temp = pd.DataFrame({'postcode':[res['query']]})
+            missing_postcode_df_temp = pd.DataFrame({'postcode':[res['input']]})
             missing_postcode_df = missing_postcode_df.append(missing_postcode_df_temp)
 
     return gp_coord_df, missing_postcode_df
