@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import os
+import json
 import dash_bootstrap_components as dbc
 
 # external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -46,6 +47,7 @@ app.layout = html.Div(children=[
                     id='LA-dropdown',
                     options=[{'label': k, 'value': k} for k in LA_list],
                     value='LA',
+                    style = {'color':'#A9A9A9'}
                     ),
                     dcc.Graph(
                             id='main-map',
@@ -81,25 +83,18 @@ app.layout = html.Div(children=[
                     id='iomd-dropdown',
                     options=[{'label': k, 'value': k} for k in iomd_decile_list],
                     value= 'None',
-                    style = {'padding-bottom': '10px'},
+                    style = {'color':'#A9A9A9'},
                 ),
                     dcc.Textarea(
                                 id='textarea-second-map',
                                 value='Select a GP surgery on the map for more info',
-                                style={'width': '100%'},
+                                style={'padding-top': '10px','width': '100%', 'height':'100px'},
                             ),
                 ]),
                 ),
             ]
         ),
 
-    
-#     html.H4(children='Table of GP surgeries in the selected local authority'),
-#     dash_table.DataTable(
-#                             id='gp-datatable',
-#                             columns=[{"name": i, "id": i} for i in surgery_df_empty.columns],
-#                             data=surgery_df_empty.to_dict('records'),
-# ),
                 
 ])
 
@@ -140,7 +135,6 @@ def update_map(dataset, selected_LA, surgery_switch, iomd_decile):
     else:
         selected_LSOA_data, selected_LSOA_df = LA_to_LSOA(selected_LA, LSOA_data)
         fig = make_map(selected_LSOA_data, selected_LSOA_df, 'color', LA_name=selected_LA, LA_data=LA_data, surgery_data=surgery_data)
-
     return fig
 
 @app.callback(
@@ -153,12 +147,13 @@ def display_click_data(clickData):
 @app.callback(
     Output('textarea-second-map', 'value'),
     [Input('second-map', 'clickData')]) 
-def display_click_data(clickData):
+def display_click_data(clickData, fig):
     return_data = 'Surgery name: '+str(clickData['points'][0]['customdata'][0])+'\n'+'PCN: '\
                     +str(clickData['points'][0]['customdata'][2])+'\n'+'Phone number: '\
                         +str(clickData['points'][0]['customdata'][3])+'\n'+'Postcode: '\
                         +str(clickData['points'][0]['customdata'][1])
+    pcn = clickData['points'][0]['customdata'][2]
     return return_data
 
 if __name__ == '__main__':
-    app.run_server(debug=False, host="0.0.0.0", port=port)
+    app.run_server(debug=True, host="0.0.0.0", port=port)

@@ -12,6 +12,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
 import requests
+import seaborn as sns
 
 england_lat = 53
 england_lon = -3
@@ -22,6 +23,7 @@ print('Reading in lookup tables...')
 lookup = pd.read_pickle('data/lookup_reduced.pkl.zip')
 print('Reading in GP surgery data...')
 surgery_data = pd.read_pickle('data/PCN_GP_data.pkl.zip')
+surgery_data['PCN'] = surgery_data['PCN'].replace(np.nan,'unknown')
 try:
     access_token = os.getenv("MAPBOX_ACCESS_TOKEN")
     px.set_mapbox_access_token(access_token)
@@ -83,9 +85,35 @@ def make_map(gpd_df, chloro_df, color, LA_name=None, LA_data=None, surgery_data=
         zoom=11
         centroid, center = get_LA_centroid(LA_name, LA_data)
     fig = px.choropleth_mapbox(chloro_df, geojson=gpd_df, color=color, locations='code', 
-                    featureidkey='properties.code',hover_name='hover_data', center=center, zoom=zoom, color_continuous_scale=px.colors.sequential.PuBuGn)
+                    featureidkey='properties.code',hover_name='hover_data', center=center, zoom=zoom, color_continuous_scale=px.colors.sequential.PuBuGn[::-1])
+
     if surgery_data is not None:
-        fig.add_trace(px.scatter_mapbox(surgery_data, lat="lat", lon="lon", size='size' ,hover_name='hover_data',custom_data=['surgery_name','postcode', 'pcn', 'phone_number'], size_max=15).data[0])
+        surgery_data['pcn'] = surgery_data['pcn'].replace(np.nan,'unknown')
+        unique = np.unique(surgery_data['pcn'])
+        color_array = np.zeros(len(surgery_data['pcn']))
+        color_map = []
+        color_palette = sns.color_palette("Paired_r", len(unique))
+        for i, pcn in enumerate(unique):
+
+            color_palette[i] = tuple([int(z * 256) for z in color_palette[i]])
+            color_map.append([i/(len(unique)-1), 'rgb'+str(color_palette[i])])
+            for j, surgery_pcn in enumerate(surgery_data['pcn']):
+                if surgery_pcn == pcn:
+                    color_array[j] = i/(len(unique)-1)
+        surgery_data['color'] = color_array
+        surgery_trace = px.scatter_mapbox(surgery_data, lat="lat", lon="lon", size='size', color='color', hover_name='hover_data',custom_data=['surgery_name','postcode', 'pcn', 'phone_number'], size_max=15)
+        surgery_trace['data'][0]['marker']['coloraxis'] = 'coloraxis2'
+        surgery_trace['data'][0]['marker']['opacity'] = 1.0
+        fig.add_trace(surgery_trace['data'][0])
+        tick_vals = [x[0] for x in color_map]
+        fig.data[1]['hovertemplate'] = '<b>%{hovertext}</b><extra></extra>'
+        fig['layout']['coloraxis2'] = {'showscale':True,
+                                   'colorscale': color_map,
+                                    'colorbar':{
+                                        'x':1.15,
+                                        'ticktext':unique,
+                                        'tickvals':tick_vals,
+                                    },}
     fig.update_layout(margin=dict(l=5, r=5, t=5, b=5), mapbox_style="dark", clickmode='event+select', hovermode='closest')
     if show_scalebar is False:
         fig.update_layout(coloraxis_showscale=False)
