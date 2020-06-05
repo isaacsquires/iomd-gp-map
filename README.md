@@ -16,6 +16,8 @@
 > The mapping functions are situated in [mapping.py](/mapping.py)
 > The data is situated in [/data](/data/)
 
+> Development is done on the development branch, and this is merged with the master when doing a deployment to Heroku.
+
 # Running it locally
 
 ## Python
