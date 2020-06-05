@@ -1,4 +1,16 @@
-# PCN-mapping-tool
+# Index of Multiple Deprivation and GP surgery mapping tool
+
+## About the application
+
+> This is a small [Dash](https://dash.plotly.com/) application written in Python for visualising GP surgeries and their Primary Care Networks (PCNs) across the UK alongside the [Index of Multiple Deprivation](https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019).
+> The intention of this tool is to help identify and differentiate between GP surgeries in deprived areas and those in non-deprived areas to help tackle the inverse care law.
+> The application is under an MIT license.
+
+## Heroku
+
+> A version of the app has been deployed to a Heroku server [here](https://iomd-gp-map.herokuapp.com/).
+
+# Running it locally
 
 ## Python
 
@@ -18,16 +30,13 @@ python app.py
 
 Note: Make sure you have a .env file or environment variable with you mapbox token as MAPBOX_ACCESS_TOKEN
 
-## Docker
+### TO DO
 
-To build Docker container
+- Dockerise
+- Setup PostGIS backend rather than reading data in from .pkl
+- Some frontend CRUD functionality with backend
+- API for backend data
 
-```bash
-docker build .
-```
+## Contributing
 
-To run
-
-```bash
-docker run .
-```
+See [here](/CONTRIBUTING.MD) on how to contribute.
