@@ -6,9 +6,15 @@
 > The intention of this tool is to help identify and differentiate between GP surgeries in deprived areas and those in non-deprived areas to help tackle the inverse care law.
 > The application is under an MIT license.
 
-## Heroku
+## Heroku deployment
 
 > A version of the app has been deployed to a Heroku server [here](https://iomd-gp-map.herokuapp.com/).
+
+## Project structure
+
+> The main Dash app is situated in [app.py](/app.py).
+> The mapping functions are situated in [mapping.py](/mapping.py)
+> The data is situated in [/data](/data/)
 
 # Running it locally
 
@@ -26,6 +32,22 @@ Run the app
 
 ```bash
 python app.py
+```
+
+## Heroku
+
+Set up a virtual environment
+
+```bash
+python -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
+```
+
+Run the app
+
+```bash
+heroku local
 ```
 
 Note: Make sure you have a .env file or environment variable with you mapbox token as MAPBOX_ACCESS_TOKEN
