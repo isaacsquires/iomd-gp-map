@@ -140,14 +140,14 @@ def update_map(dataset, selected_LA, surgery_switch, iomd_decile):
 @app.callback(
     Output('LA-dropdown', 'value'),
     [Input('main-map', 'clickData')]) 
-def display_click_data(clickData):
+def display_click_LA(clickData):
     selected_LA = clickData['points'][0]['hovertext']
     return selected_LA
 
 @app.callback(
     Output('textarea-second-map', 'value'),
     [Input('second-map', 'clickData')]) 
-def display_click_data(clickData, fig):
+def display_click_data(clickData):
     return_data = 'Surgery name: '+str(clickData['points'][0]['customdata'][0])+'\n'+'PCN: '\
                     +str(clickData['points'][0]['customdata'][2])+'\n'+'Phone number: '\
                         +str(clickData['points'][0]['customdata'][3])+'\n'+'Postcode: '\
