@@ -22,7 +22,7 @@ postcode_lsoa_lookup = pd.read_pickle('data/postcode_lookup_reduced.pkl.zip')
 print('Reading in lookup tables...')
 lookup = pd.read_pickle('data/lookup_reduced.pkl.zip')
 print('Reading in GP surgery data...')
-surgery_data = pd.read_pickle('data/PCN_GP_data.pkl.zip')
+surgery_data = pd.read_pickle('data/updated_pcn_gp.pkl.zip')
 surgery_data['PCN'] = surgery_data['PCN'].replace(np.nan,'unknown')
 try:
     access_token = os.getenv("MAPBOX_ACCESS_TOKEN")
