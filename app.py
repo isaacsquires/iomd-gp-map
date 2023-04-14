@@ -1,7 +1,6 @@
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
-import dash_table
+from dash import html, dcc
+from dash import dash_table
 from dash.dependencies import Input, Output
 from mapping import make_map, read_in_data, LA_to_LSOA, LSOA_to_IoMD, gp_surgeries_from_LA, gp_surgeries_from_LSOA, gp_coords_from_LA, filter_LSOAs_by_decile
 import pandas as pd
@@ -141,13 +140,16 @@ def update_map(dataset, selected_LA, surgery_switch, iomd_decile):
     Output('LA-dropdown', 'value'),
     [Input('main-map', 'clickData')]) 
 def display_click_data(clickData):
-    selected_LA = clickData['points'][0]['hovertext']
+    try:
+        selected_LA = clickData['points'][0]['hovertext']
+    except:
+        selected_LA = None
     return selected_LA
 
 @app.callback(
     Output('textarea-second-map', 'value'),
     [Input('second-map', 'clickData')]) 
-def display_click_data(clickData, fig):
+def display_click_data(clickData):
     return_data = 'Surgery name: '+str(clickData['points'][0]['customdata'][0])+'\n'+'PCN: '\
                     +str(clickData['points'][0]['customdata'][2])+'\n'+'Phone number: '\
                         +str(clickData['points'][0]['customdata'][3])+'\n'+'Postcode: '\

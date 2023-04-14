@@ -135,16 +135,16 @@ def LSOA_to_IoMD(LSOA_df, IoMD_df):
 def gp_surgeries_from_LSOA(LSOA_code):
     selected_postcode_lsoa_lookup = postcode_lsoa_lookup[postcode_lsoa_lookup['lsoa11cd']==LSOA_code]
     selected_surgery_data = surgery_data[surgery_data['postcode'].isin(selected_postcode_lsoa_lookup['pcd8'])]
-    selected_surgery_data = selected_surgery_data.append(surgery_data[surgery_data['postcode'].isin(selected_postcode_lsoa_lookup['pcd7'])])
-    selected_surgery_data = selected_surgery_data.append(surgery_data[surgery_data['postcode'].isin(selected_postcode_lsoa_lookup['pcds'])])
+    selected_surgery_data = pd.concat([selected_surgery_data,(surgery_data[surgery_data['postcode'].isin(selected_postcode_lsoa_lookup['pcd7'])])])
+    selected_surgery_data = pd.concat([selected_surgery_data, (surgery_data[surgery_data['postcode'].isin(selected_postcode_lsoa_lookup['pcds'])])])
     selected_surgery_data = selected_surgery_data.drop_duplicates()
     return selected_surgery_data
 
 def gp_surgeries_from_LA(LA_name):
     selected_postcode_lsoa_lookup = postcode_lsoa_lookup[postcode_lsoa_lookup['ladnm']==LA_name]
     selected_surgery_data = surgery_data[surgery_data['postcode'].isin(selected_postcode_lsoa_lookup['pcd8'])]
-    selected_surgery_data = selected_surgery_data.append(surgery_data[surgery_data['postcode'].isin(selected_postcode_lsoa_lookup['pcd7'])])
-    selected_surgery_data = selected_surgery_data.append(surgery_data[surgery_data['postcode'].isin(selected_postcode_lsoa_lookup['pcds'])])
+    selected_surgery_data = pd.concat([selected_surgery_data,(surgery_data[surgery_data['postcode'].isin(selected_postcode_lsoa_lookup['pcd7'])])])
+    selected_surgery_data = pd.concat([selected_surgery_data,(surgery_data[surgery_data['postcode'].isin(selected_postcode_lsoa_lookup['pcds'])])])
     selected_surgery_data = selected_surgery_data.drop_duplicates()
     return selected_surgery_data
 
@@ -171,10 +171,10 @@ def gp_coords_from_LA(LA_name):
             gp_coord_df_temp = pd.DataFrame({'lon':[lon],'lat':[lat],'size':size, 'postcode':selected_postcode, 
                                                 'surgery_name': surgery_name,
                                                 'pcn': pcn,'phone_number': phone_number, 'hover_data':str(surgery_name)+', '+str(pcn)})
-            gp_coord_df = gp_coord_df.append(gp_coord_df_temp)
+            gp_coord_df = pd.concat([gp_coord_df,(gp_coord_df_temp)])
         except:
             missing_postcode_df_temp = pd.DataFrame({'postcode':[res['input']]})
-            missing_postcode_df = missing_postcode_df.append(missing_postcode_df_temp)
+            missing_postcode_df = pd.concat([missing_postcode_df,(missing_postcode_df_temp)])
 
     return gp_coord_df, missing_postcode_df
 
